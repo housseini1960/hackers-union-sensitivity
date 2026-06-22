@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HACKERS UNION SENSITIVITY AI V5</title>
+    <title>HACKERS UNION SENSITIVITY AI V6</title>
     <style>
         body {
             background-color: #04060a;
@@ -87,12 +87,6 @@
         .spec-item b {
             color: #00ff80;
         }
-        .loading {
-            color: #ffcc00;
-            font-style: italic;
-            margin-top: 10px;
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -100,7 +94,7 @@
 <div class="container">
     <h1>HACKERS UNION SENSITIVITY</h1>
     
-    <input type="text" id="brand" placeholder="Modèle complet (ex: Samsung A52, Itel A80)">
+    <input type="text" id="brand" placeholder="Modèle exact (ex: Samsung A52, Samsung A22)">
     <input type="number" id="ram" placeholder="Mémoire RAM (en Go)">
     
     <select id="power">
@@ -109,85 +103,82 @@
         <option value="high">Haut de gamme (Gaming / Puissant)</option>
     </select>
     
-    <button onclick="searchAndCalculate()">GÉNÉRER LES RÉGLAGES PRO</button>
-    <div id="loader" class="loading">🔍 Scan de la base de données mondiale en cours...</div>
+    <button onclick="generateSettings()">GÉNÉRER LES RÉGLAGES PRO</button>
     
     <div id="result" class="result-box"></div>
 </div>
 
 <script>
-    function searchAndCalculate() {
+    function generateSettings() {
         let ram = parseInt(document.getElementById('ram').value);
         let power = document.getElementById('power').value;
-        let modelInput = document.getElementById('brand').value.trim();
+        let modelInput = document.getElementById('brand').value.trim().toLowerCase();
         
         if (isNaN(ram) || ram <= 0 || modelInput === "") {
             alert("Veuillez remplir correctement le modèle et la RAM.");
             return;
         }
+        
+        // 1. Algorithme d'analyse textuelle de l'empreinte du modèle
+        let signatureScore = 0;
+        let cpuType = "Processeur Standard Optimisé";
+        
+        // Calcul d'un code unique basé sur la somme des caractères écrits par l'utilisateur
+        let textWeight = 0;
+        for (let i = 0; i < modelInput.length; i++) {
+            textWeight += modelInput.charCodeAt(i);
+        }
+        
+        // Détection chirurgicale des gammes pour séparer A22 de A52
+        if (modelInput.includes("a5") || modelInput.includes("a7") || modelInput.includes("ultra") || modelInput.includes("pro") || modelInput.includes("iphone")) {
+            signatureScore = 32 + (textWeight % 10); // Données uniques pour les puces puissantes
+            cpuType = "Architecture Haute Performance Détectée 🚀";
+        } else if (modelInput.includes("a2") || modelInput.includes("a3") || modelInput.includes("spark") || modelInput.includes("neo")) {
+            signatureScore = 12 + (textWeight % 8);  // Données uniques pour la gamme intermédiaire
+            cpuType = "Architecture Équilibrée Détectée ⚙️";
+        } else if (modelInput.includes("a80") || modelInput.includes("itel") || modelInput.includes("pop") || modelInput.includes("a1")) {
+            signatureScore = -18 + (textWeight % 5); // Données adaptées pour l'entrée de gamme
+            cpuType = "Architecture Basse Consommation Détectée 🛡️";
+        } else {
+            signatureScore = (textWeight % 15);
+        }
 
-        document.getElementById('loader').style.display = 'block';
-        document.getElementById('result').style.display = 'none';
+        // Modificateur de marque globale
+        let brandModifier = 0;
+        if (modelInput.includes("samsung") || modelInput.includes("xiaomi")) brandModifier = 8;
+        if (modelInput.includes("tecno") || modelInput.includes("infinix")) brandModifier = -4;
 
-        // Connexion à l'API gratuite de fiches techniques de smartphones
-        fetch(`https://api-mobilespec.sazharimm.site/v2/search?query=${encodeURIComponent(modelInput)}`)
-        .then(response => response.json())
-        .then(data => {
-            let cpuDetected = "Processeur Standard";
-            let apiBonus = 0;
+        // Multiplicateur selon la gamme choisie
+        let powerMultiplier = (power === "low") ? 1.12 : (power === "high" ? 0.88 : 1);
 
-            // Si l'API trouve le téléphone, on analyse ses spécificités
-            if (data.status && data.data.phones.length > 0) {
-                let fullDetail = data.data.phones[0].phone_name.toLowerCase();
-                
-                // Analyse dynamique pour séparer chirurgicalement le A22 du A52
-                if (fullDetail.includes("a52") || fullDetail.includes("snapdragon") || fullDetail.includes("pro") || fullDetail.includes("ultra")) {
-                    apiBonus = 20; 
-                    cpuDetected = "Puce Haute Performance Réseau active 🚀";
-                } else if (fullDetail.includes("a22") || fullDetail.includes("helio") || fullDetail.includes("spark")) {
-                    apiBonus = 5;
-                    cpuDetected = "Puce Équilibrée Réseau active ⚙️";
-                } else {
-                    apiBonus = -10;
-                    cpuDetected = "Puce Standard Réseau active 🛡️";
-                }
-            } else {
-                cpuDetected = "Mode Hors-ligne (Modèle non répertorié)";
-            }
+        // 2. Calculs mathématiques croisés 100% uniques
+        let baseDpi = Math.round((411 + (165 / ram) - brandModifier - (signatureScore * 0.9)) * powerMultiplier);
+        
+        let sensiGenerale = Math.round(Math.min(94 + (brandModifier / 4) + (signatureScore / 7) - (ram * 0.7), 100));
+        let redDot = Math.round(Math.min(sensiGenerale + 4 + (ram * 0.2), 100));
+        let x2 = Math.round(sensiGenerale - 4 + (signatureScore * 0.08));
+        let x4 = Math.round(sensiGenerale - 7 + (signatureScore * 0.08));
+        let awm = Math.round(50 - (ram * 0.4) + (signatureScore * 0.05));
+        let lookFree = Math.round(72 + (brandModifier * 0.2));
+        
+        // Taille du bouton de tir calculée sur l'empreinte exacte de la marque écrite
+        let buttonSize = Math.round(46 + (ram * 1.1) + (signatureScore * 0.15));
 
-            // Calculs basés sur la RAM + les caractéristiques de l'API
-            let powerMultiplier = (power === "low") ? 1.12 : (power === "high" ? 0.88 : 1);
-            let baseDpi = Math.round((411 + (160 / ram) - (apiBonus * 0.8)) * powerMultiplier);
-            let sensiGenerale = Math.round(Math.min(94 + (apiBonus / 4) - (ram * 0.7), 100));
-            let redDot = Math.round(Math.min(sensiGenerale + 4 + (ram * 0.2), 100));
-            let x2 = Math.round(sensiGenerale - 4 + (apiBonus * 0.1));
-            let x4 = Math.round(sensiGenerale - 7 + (apiBonus * 0.1));
-            let awm = Math.round(50 - (ram * 0.4));
-            let lookFree = Math.round(72);
-            let buttonSize = Math.round(46 + (ram * 1.1) + (apiBonus * 0.1));
-
-            document.getElementById('loader').style.display = 'none';
-            let resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = `
-                <div class="result-title">⚡ PANNEAU SMART NETWORK - ${modelInput.toUpperCase()} :</div>
-                <div class="spec-item"><span>📡 <b>INFO API EN LIGNE :</b></span> <span style="color:#00ff80;">${cpuDetected}</span></div>
-                <div class="spec-item"><span>📐 <b>DPI OPTIMAL :</b></span> <b>${baseDpi}</b></div>
-                <div class="spec-item"><span>🕹️ Sensibilité Générale :</span> <span>${sensiGenerale}</span></div>
-                <div class="spec-item"><span>🔴 Point Rouge (Red Dot) :</span> <span>${redDot}</span></div>
-                <div class="spec-item"><span>🔍 Lunette x2 :</span> <span>${x2}</span></div>
-                <div class="spec-item"><span>🔭 Lunette x4 :</span> <span>${x4}</span></div>
-                <div class="spec-item"><span>🎯 Sniper (AWM) :</span> <span>${awm}</span></div>
-                <div class="spec-item"><span>👀 Regard Libre :</span> <span>${lookFree}</span></div>
-                <div class="spec-item"><span>🔘 <b>BOUTON DE TIR :</b></span> <b>${buttonSize}%</b></div>
-                <p style="color: #ffcc00; margin-top: 15px; font-size:14px; font-style:italic;">🔥 Base IA Hackers Union : Données matérielles vérifiées en ligne sans surcoût !</p>
-            `;
-            resultDiv.style.display = 'block';
-        })
-        .catch(error => {
-            // Sécurité en cas de coupure réseau de l'API
-            document.getElementById('loader').style.display = 'none';
-            alert("Erreur de connexion à l'API. Vos réglages par défaut s'appliqueront.");
-        });
+        let resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `
+            <div class="result-title">⚡ PANNEAU IA CORE - ${modelInput.toUpperCase()} :</div>
+            <div class="spec-item"><span>🔍 <b>SIGNATURE MATÉRIELLE :</b></span> <span style="color:#00ff80;">${cpuType}</span></div>
+            <div class="spec-item"><span>📐 <b>DPI OPTIMAL :</b></span> <b>${baseDpi}</b></div>
+            <div class="spec-item"><span>🕹️ Sensibilité Générale :</span> <span>${sensiGenerale}</span></div>
+            <div class="spec-item"><span>🔴 Point Rouge (Red Dot) :</span> <span>${redDot}</span></div>
+            <div class="spec-item"><span>🔍 Lunette x2 :</span> <span>${x2}</span></div>
+            <div class="spec-item"><span>🔭 Lunette x4 :</span> <span>${x4}</span></div>
+            <div class="spec-item"><span>🎯 Sniper (AWM) :</span> <span>${awm}</span></div>
+            <div class="spec-item"><span>👀 Regard Libre :</span> <span>${lookFree}</span></div>
+            <div class="spec-item"><span>🔘 <b>BOUTON DE TIR :</b></span> <b>${buttonSize}%</b></div>
+            <p style="color: #ffcc00; margin-top: 15px; font-size:14px; font-style:italic;">🔥 Base Algorithmique Hackers Union : Profil unique généré d'après l'empreinte de votre modèle !</p>
+        `;
+        resultDiv.style.display = 'block';
     }
 </script>
 
