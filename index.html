@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HACKERS UNION SENSITIVITY PRO</title>
+    <style>
+        body {
+            background-color: #04060a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #0d131f;
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid #00ff80;
+            box-shadow: 0 0 20px rgba(0, 255, 128, 0.2);
+        }
+        h1 {
+            color: #00ff80;
+            font-size: 24px;
+            margin-bottom: 25px;
+            text-shadow: 0 0 10px rgba(0, 255, 128, 0.5);
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background-color: #1a2333;
+            border: 1px solid #334466;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus {
+            border-color: #00ff80;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            background-color: #00cc66;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+        button:hover {
+            background-color: #00ff80;
+            box-shadow: 0 0 15px rgba(0, 255, 128, 0.4);
+        }
+        .result-box {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: #141c2c;
+            border-radius: 8px;
+            border-left: 4px solid #00ff80;
+            text-align: left;
+            display: none;
+        }
+        .result-title {
+            color: #00ff80;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>HACKERS UNION SENSITIVITY</h1>
+    
+    <input type="text" id="brand" placeholder="Marque du téléphone (ex: Infinix, Samsung)">
+    <input type="number" id="ram" placeholder="Mémoire RAM (en Go)">
+    
+    <select id="power">
+        <option value="medium">Milieu de gamme (Standard)</option>
+        <option value="low">Entrée de gamme (Fluide léger)</option>
+        <option value="high">Haut de gamme (Gaming / Puissant)</option>
+    </select>
+    
+    <button onclick="generateSettings()">GÉNÉRER LES RÉGLAGES PRO</button>
+    
+    <div id="result" class="result-box"></div>
+</div>
+
+<script>
+    function generateSettings() {
+        let ram = parseInt(document.getElementById('ram').value);
+        let power = document.getElementById('power').value;
+        let brand = document.getElementById('brand').value;
+        
+        if (isNaN(ram) || ram <= 0) {
+            alert("Veuillez entrer un chiffre valide pour la RAM.");
+            return;
+        }
+        
+        let baseDpi = 411;
+        let baseSensi = 90;
+        let perfStatus = "Configuration Équilibrée";
+        
+        if (ram <= 3) {
+            baseDpi += 90;
+            baseSensi += 8;
+        } else if (ram <= 6) {
+            baseDpi += 50;
+            baseSensi += 5;
+        } else {
+            baseDpi += 30;
+            baseSensi += 2;
+        }
+        
+        if (power === "low") {
+            baseDpi += 30;
+            baseSensi = Math.min(baseSensi + 3, 100);
+            perfStatus = "Optimisation Anti-Lag activée";
+        } else if (power === "high") {
+            baseDpi -= 15;
+            baseSensi = Math.max(baseSensi - 2, 85);
+            perfStatus = "Stabilisation Haute Performance activée";
+        }
+        
+        let resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = `
+            <div class="result-title">⚡ PROFIL DÉTECTÉ POUR ${brand.toUpperCase()} :</div>
+            <p>🎯 <b>DPI OPTIMAL :</b> ${baseDpi}</p>
+            <p>🕹️ <b>SENSIBILITÉ GÉNÉRALE :</b> ${baseSensi}</p>
+            <p>🤖 <b>PROCESSEUR :</b> ${perfStatus}</p>
+            <p style="color: #ffcc00; margin-top: 10px;">🔥 <b>Astuce :</b> Activez la vitesse de pointeur dans vos paramètres !</p>
+        `;
+        resultDiv.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
