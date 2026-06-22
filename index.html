@@ -130,7 +130,7 @@
         document.getElementById('result').style.display = 'none';
 
         // Connexion à l'API gratuite de fiches techniques de smartphones
-        fetch(`https://azharimm.site{encodeURIComponent(modelInput)}`)
+        fetch(`https://api-mobilespec.sazharimm.site/v2/search?query=${encodeURIComponent(modelInput)}`)
         .then(response => response.json())
         .then(data => {
             let cpuDetected = "Processeur Standard";
