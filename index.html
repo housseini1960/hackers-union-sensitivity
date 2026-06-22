@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HACKERS UNION SENSITIVITY PRO</title>
+    <title>HACKERS UNION SENSITIVITY PRO V2</title>
     <style>
         body {
             background-color: #04060a;
@@ -62,7 +62,7 @@
         }
         .result-box {
             margin-top: 25px;
-            padding: 15px;
+            padding: 20px;
             background-color: #141c2c;
             border-radius: 8px;
             border-left: 4px solid #00ff80;
@@ -72,7 +72,20 @@
         .result-title {
             color: #00ff80;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            border-bottom: 1px solid #334466;
+            padding-bottom: 5px;
+        }
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            padding: 4px 0;
+            border-bottom: 1px dashed #223355;
+        }
+        .spec-item b {
+            color: #00ff80;
         }
     </style>
 </head>
@@ -81,7 +94,7 @@
 <div class="container">
     <h1>HACKERS UNION SENSITIVITY</h1>
     
-    <input type="text" id="brand" placeholder="Marque du téléphone (ex: Infinix, Samsung)">
+    <input type="text" id="brand" placeholder="Marque du téléphone (ex: Infinix, Tecno)">
     <input type="number" id="ram" placeholder="Mémoire RAM (en Go)">
     
     <select id="power">
@@ -106,38 +119,62 @@
             return;
         }
         
+        // Algorithme étendu pour toutes les sensibilités
         let baseDpi = 411;
-        let baseSensi = 90;
+        let sensiGenerale = 90;
+        let redDot = 95;
+        let x2 = 88;
+        let x4 = 85;
+        let awm = 50;
+        let lookFree = 70;
+        let buttonSize = 45;
         let perfStatus = "Configuration Équilibrée";
         
         if (ram <= 3) {
             baseDpi += 90;
-            baseSensi += 8;
+            sensiGenerale += 8;
+            redDot = 99;
+            buttonSize = 42; // Plus petit bouton pour les petits écrans
         } else if (ram <= 6) {
             baseDpi += 50;
-            baseSensi += 5;
+            sensiGenerale += 5;
+            redDot = 95;
+            buttonSize = 48;
         } else {
             baseDpi += 30;
-            baseSensi += 2;
+            sensiGenerale += 2;
+            redDot = 92;
+            buttonSize = 52;
         }
         
         if (power === "low") {
             baseDpi += 30;
-            baseSensi = Math.min(baseSensi + 3, 100);
+            sensiGenerale = Math.min(sensiGenerale + 3, 100);
+            redDot = 100;
+            x2 += 5;
+            x4 += 5;
             perfStatus = "Optimisation Anti-Lag activée";
         } else if (power === "high") {
             baseDpi -= 15;
-            baseSensi = Math.max(baseSensi - 2, 85);
+            sensiGenerale = Math.max(sensiGenerale - 2, 85);
+            x2 -= 3;
+            x4 -= 3;
             perfStatus = "Stabilisation Haute Performance activée";
         }
         
         let resultDiv = document.getElementById('result');
         resultDiv.innerHTML = `
-            <div class="result-title">⚡ PROFIL DÉTECTÉ POUR ${brand.toUpperCase()} :</div>
-            <p>🎯 <b>DPI OPTIMAL :</b> ${baseDpi}</p>
-            <p>🕹️ <b>SENSIBILITÉ GÉNÉRALE :</b> ${baseSensi}</p>
-            <p>🤖 <b>PROCESSEUR :</b> ${perfStatus}</p>
-            <p style="color: #ffcc00; margin-top: 10px;">🔥 <b>Astuce :</b> Activez la vitesse de pointeur dans vos paramètres !</p>
+            <div class="result-title">⚡ PANNEAU PRO - ${brand.toUpperCase()} (${ram}Go RAM) :</div>
+            <div class="spec-item"><span>📐 <b>DPI OPTIMAL :</b></span> <b>${baseDpi}</b></div>
+            <div class="spec-item"><span>🕹️ Sensibilité Générale :</span> <span>${sensiGenerale}</span></div>
+            <div class="spec-item"><span>🔴 Point Rouge (Red Dot) :</span> <span>${redDot}</span></div>
+            <div class="spec-item"><span>🔍 Lunette x2 :</span> <span>${x2}</span></div>
+            <div class="spec-item"><span>🔭 Lunette x4 :</span> <span>${x4}</span></div>
+            <div class="spec-item"><span>🎯 Sniper (AWM) :</span> <span>${awm}</span></div>
+            <div class="spec-item"><span>👀 Regard Libre :</span> <span>${lookFree}</span></div>
+            <div class="spec-item"><span>🔘 <b>BOUTON DE TIR DE JEU :</b></span> <b>${buttonSize}%</b></div>
+            <div class="spec-item"><span>🤖 Statut Processeur :</span> <span style="color:#00ff80;">${perfStatus}</span></div>
+            <p style="color: #ffcc00; margin-top: 15px; font-size:14px; font-style:italic;">🔥 Astuce Hackers Union : Forcez la vitesse de pointeur au maximum dans Android !</p>
         `;
         resultDiv.style.display = 'block';
     }
