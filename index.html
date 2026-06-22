@@ -132,13 +132,13 @@
         // Détection chirurgicale des gammes pour séparer A22 de A52
         if (modelInput.includes("a5") || modelInput.includes("a7") || modelInput.includes("ultra") || modelInput.includes("pro") || modelInput.includes("iphone")) {
             signatureScore = 32 + (textWeight % 10); // Données uniques pour les puces puissantes
-            cpuType = "Architecture Haute Performance Détectée 🚀";
+            cpuType = "High-Performance Architecture Detected 🚀";
         } else if (modelInput.includes("a2") || modelInput.includes("a3") || modelInput.includes("spark") || modelInput.includes("neo")) {
             signatureScore = 12 + (textWeight % 8);  // Données uniques pour la gamme intermédiaire
-            cpuType = "Architecture Équilibrée Détectée ⚙️";
+            cpuType = "Balanced Architecture Detected ⚙️";
         } else if (modelInput.includes("a80") || modelInput.includes("itel") || modelInput.includes("pop") || modelInput.includes("a1")) {
             signatureScore = -18 + (textWeight % 5); // Données adaptées pour l'entrée de gamme
-            cpuType = "Architecture Basse Consommation Détectée 🛡️";
+            cpuType = "Low-Power Architecture Detected 🛡️";
         } else {
             signatureScore = (textWeight % 15);
         }
