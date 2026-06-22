@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HACKERS UNION SENSITIVITY PRO V2</title>
+    <title>HACKERS UNION SENSITIVITY ULTRA V3</title>
     <style>
         body {
             background-color: #04060a;
@@ -94,8 +94,8 @@
 <div class="container">
     <h1>HACKERS UNION SENSITIVITY</h1>
     
-    <input type="text" id="brand" placeholder="Marque du téléphone (ex: Infinix, Tecno)">
-    <input type="number" id="ram" placeholder="Mémoire RAM (en Go)">
+    <input type="text" id="brand" placeholder="Marque exacte (ex: Samsung, Itel, Tecno)">
+    <input type="number" id="ram" placeholder="Mémoire RAM exacte (en Go)">
     
     <select id="power">
         <option value="medium">Milieu de gamme (Standard)</option>
@@ -112,59 +112,50 @@
     function generateSettings() {
         let ram = parseInt(document.getElementById('ram').value);
         let power = document.getElementById('power').value;
-        let brand = document.getElementById('brand').value;
+        let brandInput = document.getElementById('brand').value.trim().toLowerCase();
         
-        if (isNaN(ram) || ram <= 0) {
-            alert("Veuillez entrer un chiffre valide pour la RAM.");
+        if (isNaN(ram) || ram <= 0 || brandInput === "") {
+            alert("Veuillez remplir correctement la marque et la RAM.");
             return;
         }
         
-        // Algorithme étendu pour toutes les sensibilités
-        let baseDpi = 411;
-        let sensiGenerale = 90;
-        let redDot = 95;
-        let x2 = 88;
-        let x4 = 85;
-        let awm = 50;
-        let lookFree = 70;
-        let buttonSize = 45;
+        // 1. Coefficient de puissance matérielle selon le constructeur
+        let brandModifier = 0;
+        if (brandInput.includes("samsung") || brandInput.includes("iphone") || brandInput.includes("apple") || brandInput.includes("xiaomi")) {
+            brandModifier = 12; // Écrans et processeurs plus réactifs de base
+        } else if (brandInput.includes("tecno") || brandInput.includes("infinix")) {
+            brandModifier = -5;  // Compensation de la sensibilité tactile
+        } else if (brandInput.includes("itel")) {
+            brandModifier = -15; // Gros coup de boost nécessaire pour l'entrée de gamme
+        }
+
+        // 2. Multiplicateur selon la gamme sélectionnée
+        let powerMultiplier = 1;
         let perfStatus = "Configuration Équilibrée";
-        
-        if (ram <= 3) {
-            baseDpi += 90;
-            sensiGenerale += 8;
-            redDot = 99;
-            buttonSize = 42; // Plus petit bouton pour les petits écrans
-        } else if (ram <= 6) {
-            baseDpi += 50;
-            sensiGenerale += 5;
-            redDot = 95;
-            buttonSize = 48;
-        } else {
-            baseDpi += 30;
-            sensiGenerale += 2;
-            redDot = 92;
-            buttonSize = 52;
-        }
-        
         if (power === "low") {
-            baseDpi += 30;
-            sensiGenerale = Math.min(sensiGenerale + 3, 100);
-            redDot = 100;
-            x2 += 5;
-            x4 += 5;
-            perfStatus = "Optimisation Anti-Lag activée";
+            powerMultiplier = 1.15;
+            perfStatus = "Optimisation Basse Puissance Active";
         } else if (power === "high") {
-            baseDpi -= 15;
-            sensiGenerale = Math.max(sensiGenerale - 2, 85);
-            x2 -= 3;
-            x4 -= 3;
-            perfStatus = "Stabilisation Haute Performance activée";
+            powerMultiplier = 0.85;
+            perfStatus = "Stabilisation Moteur Gaming Active";
         }
+
+        // 3. Calculs croisés pour des résultats uniques à chaque appareil
+        let baseDpi = Math.round((411 + (150 / ram) - brandModifier) * powerMultiplier);
         
+        let sensiGenerale = Math.round(Math.min(95 + (brandModifier / 5) - (ram * 0.8), 100));
+        let redDot = Math.round(Math.min(sensiGenerale + 3 + (ram * 0.3), 100));
+        let x2 = Math.round(sensiGenerale - 5 + (brandModifier * 0.2));
+        let x4 = Math.round(sensiGenerale - 8 + (brandModifier * 0.2));
+        let awm = Math.round(50 - (ram * 0.5));
+        let lookFree = Math.round(70 + (brandModifier * 0.3));
+        
+        // Calcul millimétré de la taille du bouton de tir
+        let buttonSize = Math.round(45 + (ram * 1.2) + (brandModifier * 0.3));
+
         let resultDiv = document.getElementById('result');
         resultDiv.innerHTML = `
-            <div class="result-title">⚡ PANNEAU PRO - ${brand.toUpperCase()} (${ram}Go RAM) :</div>
+            <div class="result-title">⚡ PANNEAU ULTRA - ${brandInput.toUpperCase()} (${ram}Go RAM) :</div>
             <div class="spec-item"><span>📐 <b>DPI OPTIMAL :</b></span> <b>${baseDpi}</b></div>
             <div class="spec-item"><span>🕹️ Sensibilité Générale :</span> <span>${sensiGenerale}</span></div>
             <div class="spec-item"><span>🔴 Point Rouge (Red Dot) :</span> <span>${redDot}</span></div>
@@ -172,9 +163,9 @@
             <div class="spec-item"><span>🔭 Lunette x4 :</span> <span>${x4}</span></div>
             <div class="spec-item"><span>🎯 Sniper (AWM) :</span> <span>${awm}</span></div>
             <div class="spec-item"><span>👀 Regard Libre :</span> <span>${lookFree}</span></div>
-            <div class="spec-item"><span>🔘 <b>BOUTON DE TIR DE JEU :</b></span> <b>${buttonSize}%</b></div>
-            <div class="spec-item"><span>🤖 Statut Processeur :</span> <span style="color:#00ff80;">${perfStatus}</span></div>
-            <p style="color: #ffcc00; margin-top: 15px; font-size:14px; font-style:italic;">🔥 Astuce Hackers Union : Forcez la vitesse de pointeur au maximum dans Android !</p>
+            <div class="spec-item"><span>🔘 <b>BOUTON DE TIR :</b></span> <b>${buttonSize}%</b></div>
+            <div class="spec-item"><span>🤖 Profil Puissance :</span> <span style="color:#00ff80;">${perfStatus}</span></div>
+            <p style="color: #ffcc00; margin-top: 15px; font-size:14px; font-style:italic;">🔥 IA Hackers Union : Vos réglages calculés sur l'empreinte matérielle de l'appareil !</p>
         `;
         resultDiv.style.display = 'block';
     }
