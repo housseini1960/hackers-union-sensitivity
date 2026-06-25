@@ -1,186 +1,384 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HACKERS UNION SENSITIVITY AI V6</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HACKERS UNION</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
-    
-    body {
-      font-family: 'Orbitron', sans-serif;
-      background: radial-gradient(circle at center, #0a001f 0%, #000000 70%);
-      color: #ffffff;
-      min-height: 100vh;
+    :root{
+      --card:rgba(10,15,35,.74);
+      --border:rgba(0,255,128,.22);
+      --green:#00ff80;
+      --cyan:#22d3ee;
+      --text:#ffffff;
     }
-    
-    .neon-green {
-      text-shadow: 0 0 15px #00ff80, 0 0 30px #00ff80;
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      font-family:'Orbitron',sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(34,211,238,.18) 0, transparent 22%),
+        radial-gradient(circle at 80% 10%, rgba(0,255,128,.16) 0, transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(168,85,247,.16) 0, transparent 28%),
+        linear-gradient(-45deg, #090115, #05010b, #001219, #12011d);
+      background-size:400% 400%;
+      animation:bgShift 16s ease infinite;
+      overflow-x:hidden;
     }
-    
-    .glass {
-      background: rgba(10, 15, 35, 0.75);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(0, 255, 128, 0.3);
-    }
-    
-    .input-field {
-      background: rgba(0, 0, 0, 0.6);
-      border: 2px solid #334455;
-      transition: all 0.3s;
-    }
-    
-    .input-field:focus {
-      border-color: #00ff80;
-      box-shadow: 0 0 15px rgba(0, 255, 128, 0.4);
-      outline: none;
-    }
-    
-    .btn-generate {
-      background: linear-gradient(90deg, #00cc66, #00ff80);
-      transition: all 0.4s;
-    }
-    
-    .btn-generate:hover {
-      transform: scale(1.05);
-      box-shadow: 0 0 30px #00ff80;
-    }
+    @keyframes bgShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    .page-wrap{max-width:980px;margin:0 auto;padding:14px 12px 42px}
+    .sticky-header{position:sticky;top:0;z-index:80;margin-bottom:16px;overflow:hidden}
+    .header-inner{background:rgba(8,10,20,.84);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid rgba(0,255,128,.18);box-shadow:0 18px 40px rgba(0,0,0,.35)}
+    .glass{background:var(--card);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--border);box-shadow:0 18px 50px rgba(0,0,0,.42)}
+    .neon-green{text-shadow:0 0 14px var(--green),0 0 30px var(--green)}
+    .tab-btn{flex:1;border:none;color:#d9ffe9;background:rgba(255,255,255,.05);padding:14px 12px;border-radius:18px;font-weight:800;transition:.25s ease}
+    .tab-btn.active{background:linear-gradient(90deg, rgba(0,255,128,.22), rgba(34,211,238,.18));color:#fff;box-shadow:0 0 0 1px rgba(0,255,128,.24) inset,0 10px 28px rgba(0,255,128,.12);transform:translateY(-1px)}
+    .panel{display:none;animation:fadeUp .35s ease both}
+    .panel.active{display:block}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .input-field{width:100%;background:rgba(0,0,0,.58);border:2px solid #2b3a4a;color:#fff;outline:none;transition:.25s ease}
+    .input-field:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(0,255,128,.12)}
+    .btn-primary{width:100%;border:none;color:#000;font-weight:900;background:linear-gradient(90deg, #00cc66, #00ff80);transition:.25s ease;box-shadow:0 12px 28px rgba(0,255,128,.15)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 34px rgba(0,255,128,.28)}
+    .btn-secondary,.btn-copy{width:100%;border:none;color:#fff;font-weight:800;transition:.25s ease}
+    .btn-secondary{background:rgba(255,255,255,.06);border:1px solid rgba(0,255,128,.22)}
+    .btn-copy{background:linear-gradient(90deg, rgba(34,211,238,.18), rgba(0,255,128,.18));border:1px solid rgba(34,211,238,.24)}
+    .btn-secondary:hover,.btn-copy:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
+    .result-line{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid rgba(0,255,128,.14)}
+    .result-line:last-child{border-bottom:none}
+    .label{color:#d6dbe5}
+    .value{font-weight:900;color:var(--green)}
+    .value.yellow{color:#f7d44c}
+    .mini-note{color:rgba(0,255,128,.68);font-size:11px;text-align:center;margin-top:18px;font-style:italic}
+    .brand h1{margin:0;font-size:clamp(28px,5vw,44px);font-weight:900;letter-spacing:2px}
+    .brand p{margin:8px 0 0;color:var(--cyan);font-size:clamp(14px,2vw,18px)}
+    .subtitle{margin-top:10px;height:3px;width:96px;background:linear-gradient(90deg, transparent, var(--green), transparent)}
+    .footer{text-align:center;margin-top:18px;color:rgba(0,255,128,.45);font-size:12px}
+    .badge{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(0,255,128,.18);color:#dff;font-size:12px;font-weight:800;transition:.2s ease;cursor:pointer}
+    .badge:hover{transform:translateY(-1px);background:rgba(0,255,128,.08)}
+    .mobile-menu{position:absolute;right:12px;top:64px;width:min(280px, calc(100vw - 24px));background:rgba(7,10,18,.96);border:1px solid rgba(0,255,128,.18);border-radius:22px;box-shadow:0 20px 50px rgba(0,0,0,.45);overflow:hidden;transform-origin:top right;transform:scale(.92) translateY(-10px);opacity:0;pointer-events:none;transition:.22s ease;z-index:90;max-height:320px;overflow-y:auto}
+    .mobile-menu.open{opacity:1;pointer-events:auto;transform:scale(1) translateY(0)}
+    .mobile-menu button{display:flex;width:100%;align-items:center;gap:12px;padding:14px 16px;color:#fff;background:transparent;border:none;text-align:left;font-weight:800}
+    .mobile-menu button:hover{background:rgba(0,255,128,.08)}
+    .menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.34);opacity:0;pointer-events:none;transition:.2s ease;z-index:70}
+    .menu-backdrop.open{opacity:1;pointer-events:auto}
+    @media (max-width:640px){.page-wrap{padding:10px 10px 36px}.tab-btn{padding:12px 10px;border-radius:16px;font-size:13px}}
   </style>
 </head>
-<body class="pb-12">
+<body>
+  <div id="menuBackdrop" class="menu-backdrop" onclick="toggleMenu(false)"></div>
 
-  <div class="max-w-2xl mx-auto px-4 pt-10">
-    <!-- Header -->
-    <div class="text-center mb-10">
-      <h1 class="text-5xl font-black neon-green tracking-widest">HACKERS UNION</h1>
-      <p class="text-xl text-cyan-400 mt-2">SENSITIVITY AI <span class="text-green-400">V6</span></p>
-      <div class="h-1 w-24 bg-gradient-to-r from-transparent via-green-400 to-transparent mx-auto mt-4"></div>
-    </div>
-
-    <div class="glass rounded-3xl p-8 shadow-2xl">
-      <div class="space-y-6">
-        <div>
-          <label class="block text-green-400 text-sm mb-2 font-medium">📱 EXACT PHONE MODEL</label>
-          <input type="text" id="brand" 
-                 class="input-field w-full p-5 rounded-2xl text-lg"
-                 placeholder="Ex: Samsung A52, Redmi Note 12, Infinix Hot 12...">
+  <div class="sticky-header">
+    <div class="header-inner">
+      <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-3 relative">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl glass flex items-center justify-center text-green-400">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <div>
+            <div class="text-white font-black tracking-wider">HACKERS UNION</div>
+            <div class="text-cyan-400 text-xs">Developed by a Duo of Professionals</div>
+          </div>
         </div>
 
-        <div>
-          <label class="block text-green-400 text-sm mb-2 font-medium">💾 RAM (in GB)</label>
-          <input type="number" id="ram" 
-                 class="input-field w-full p-5 rounded-2xl text-lg"
-                 placeholder="Ex: 4, 6, 8, 12">
+        <div class="flex items-center gap-3 text-cyan-300">
+          <button type="button" class="badge" onclick="quickAction('home')"><i class="fa-solid fa-house"></i> Home</button>
+          <button type="button" class="w-11 h-11 rounded-2xl glass flex items-center justify-center text-white" onclick="toggleMenu()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
         </div>
 
-        <div>
-          <label class="block text-green-400 text-sm mb-2 font-medium">⚡ PERFORMANCE LEVEL</label>
-          <select id="power" 
-                  class="input-field w-full p-5 rounded-2xl text-lg">
-            <option value="medium">Mid-tier / Standard</option>
-            <option value="low">Low-tier / Light</option>
-            <option value="high">High-tier / Full Gaming</option>
-          </select>
-        </div>
-
-        <button onclick="generateSettings()" 
-                class="btn-generate w-full py-7 text-xl font-bold rounded-2xl text-black flex items-center justify-center gap-3">
-          <i class="fas fa-bolt"></i>
-          GENERATE PRO SETTINGS
-        </button>
+        <div id="mobileMenu" class="mobile-menu"></div>
       </div>
-
-      <!-- Result -->
-      <div id="result" class="hidden mt-10 glass p-8 rounded-3xl border-l-4 border-green-400">
-        <h3 class="text-2xl font-bold text-green-400 mb-6 text-center" id="device-name"></h3>
-        
-        <div class="space-y-4 text-left" id="settings-content"></div>
-        
-        <p class="text-center text-xs text-green-400/70 mt-8 italic">
-          🔥 Unique AI Algorithm based on your device signature
-        </p>
-      </div>
-    </div>
-
-    <div class="text-center mt-8 text-green-400/50 text-sm">
-      HACKERS UNION • Free Fire Sensitivity Optimizer
     </div>
   </div>
 
+  <div class="page-wrap">
+    <div class="text-center mb-7">
+      <div class="brand">
+        <h1 class="neon-green">HACKERS UNION</h1>
+        <p><span class="text-green-400">Developed by a Duo of Professionals</span> <span class="text-green-400">V9</span></p>
+        <div class="subtitle mx-auto"></div>
+      </div>
+
+      <div class="mt-4 flex flex-wrap justify-center gap-2">
+        <button type="button" class="badge" onclick="toggleGlow('mobile')"><i class="fa-solid fa-mobile-screen-button"></i> Mobile First</button>
+        <button type="button" class="badge" onclick="toggleGlow('neon')"><i class="fa-solid fa-wand-magic-sparkles"></i> Neon FX</button>
+        <button type="button" class="badge" onclick="toggleGlow('stable')"><i class="fa-solid fa-shield-halved"></i> Stable Calc</button>
+      </div>
+    </div>
+
+    <div class="glass rounded-[30px] p-4 sm:p-6">
+      <div class="flex gap-3 mb-5">
+        <button id="tabCodm" class="tab-btn active" type="button" onclick="switchTab('codm')"><i class="fa-solid fa-crosshairs mr-2"></i>CODM</button>
+        <button id="tabFree" class="tab-btn" type="button" onclick="switchTab('freefire')"><i class="fa-solid fa-fire mr-2"></i>FREE FIRE</button>
+      </div>
+
+      <div id="panelCodm" class="panel active">
+        <div class="glass rounded-[24px] p-5 sm:p-6">
+          <div class="space-y-5">
+            <div>
+              <label class="block text-green-400 text-sm mb-2 font-medium">📱 EXACT PHONE MODEL</label>
+              <input type="text" id="codmModel" class="input-field p-4 rounded-2xl text-base sm:text-lg" placeholder="Ex: Samsung S23, Redmi Note 12 Pro...">
+            </div>
+            <div>
+              <label class="block text-green-400 text-sm mb-2 font-medium">💾 RAM (in GB)</label>
+              <input type="number" id="codmRam" class="input-field p-4 rounded-2xl text-base sm:text-lg" placeholder="Ex: 4, 6, 8, 12">
+            </div>
+            <div>
+              <label class="block text-green-400 text-sm mb-2 font-medium">⚡ PERFORMANCE LEVEL</label>
+              <select id="codmPower" class="input-field p-4 rounded-2xl text-base sm:text-lg">
+                <option value="medium">Mid-tier / Standard</option>
+                <option value="low">Low-tier / Light</option>
+                <option value="high">High-tier / Full Gaming</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <button type="button" class="btn-primary py-4 rounded-2xl text-base sm:text-lg" onclick="generateCodm()"><i class="fa-solid fa-bolt mr-2"></i>GENERATE</button>
+              <button type="button" class="btn-copy py-4 rounded-2xl text-base sm:text-lg" onclick="copyResult('codm')"><i class="fa-solid fa-copy mr-2"></i>COPY</button>
+              <button type="button" class="btn-secondary py-4 rounded-2xl text-base sm:text-lg" onclick="resetCodm()"><i class="fa-solid fa-rotate-left mr-2"></i>RESET</button>
+            </div>
+          </div>
+          <div id="codmResult" class="hidden mt-8 glass p-5 sm:p-6 rounded-[24px] border-l-4 border-green-400">
+            <h3 id="codmDeviceName" class="text-xl sm:text-2xl font-bold text-green-400 mb-4 text-center"></h3>
+            <div id="codmSettings" class="space-y-1"></div>
+            <p class="mini-note">🔥 Unique AI Algorithm based on your device signature</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="panelFree" class="panel">
+        <div class="glass rounded-[24px] p-5 sm:p-6">
+          <div class="space-y-5">
+            <div>
+              <label class="block text-green-400 text-sm mb-2 font-medium">📱 EXACT PHONE MODEL</label>
+              <input type="text" id="ffModel" class="input-field p-4 rounded-2xl text-base sm:text-lg" placeholder="Ex: Infinix Hot 12, iPhone 13, Samsung A52...">
+            </div>
+            <div>
+              <label class="block text-green-400 text-sm mb-2 font-medium">💾 RAM (in GB)</label>
+              <input type="number" id="ffRam" class="input-field p-4 rounded-2xl text-base sm:text-lg" placeholder="Ex: 2, 4, 6, 8">
+            </div>
+            <div>
+              <label class="block text-green-400 text-sm mb-2 font-medium">⚡ PERFORMANCE LEVEL</label>
+              <select id="ffPower" class="input-field p-4 rounded-2xl text-base sm:text-lg">
+                <option value="medium">Mid-tier / Standard</option>
+                <option value="low">Low-tier / Light</option>
+                <option value="high">High-tier / Full Gaming</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <button type="button" class="btn-primary py-4 rounded-2xl text-base sm:text-lg" onclick="generateFreefire()"><i class="fa-solid fa-bolt mr-2"></i>GENERATE</button>
+              <button type="button" class="btn-copy py-4 rounded-2xl text-base sm:text-lg" onclick="copyResult('freefire')"><i class="fa-solid fa-copy mr-2"></i>COPY</button>
+              <button type="button" class="btn-secondary py-4 rounded-2xl text-base sm:text-lg" onclick="resetFreefire()"><i class="fa-solid fa-rotate-left mr-2"></i>RESET</button>
+            </div>
+          </div>
+          <div id="ffResult" class="hidden mt-8 glass p-5 sm:p-6 rounded-[24px] border-l-4 border-green-400">
+            <h3 id="ffDeviceName" class="text-xl sm:text-2xl font-bold text-green-400 mb-4 text-center"></h3>
+            <div id="ffSettings" class="space-y-1"></div>
+            <p class="mini-note">🔥 Unique AI Algorithm based on your device signature</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">HACKERS UNION • Developed by a Duo of Professionals</div>
+  </div>
+
   <script>
-    function generateSettings() {
-      let modelInput = document.getElementById('brand').value.trim();
-      let ram = parseInt(document.getElementById('ram').value);
-      let power = document.getElementById('power').value;
+    const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
+    let copiedTextStore = { codm: "", freefire: "" };
+    let glowState = { mobile: false, neon: false, stable: false };
 
-      if (!modelInput || isNaN(ram) || ram <= 0) {
-        alert("❌ Please enter a valid phone model and RAM.");
-        return;
-      }
-
-      let modelLower = modelInput.toLowerCase();
-      let signatureScore = 0;
-      let cpuType = "Standard Optimized Processor";
-
-      if (modelLower.includes("a5") || modelLower.includes("a7") || modelLower.includes("pro") || 
-          modelLower.includes("ultra") || modelLower.includes("iphone") || modelLower.includes("redmi note 1")) {
-        signatureScore = 35;
-        cpuType = "High-Performance Chip Detected 🚀";
-      } else if (modelLower.includes("a2") || modelLower.includes("a3") || modelLower.includes("spark")) {
-        signatureScore = 18;
-        cpuType = "Mid-Range Balanced Chip ⚙️";
-      } else {
-        signatureScore = 8;
-        cpuType = "Entry-Level Optimized Chip 🛡️";
-      }
-
-      let baseDpi = Math.round(380 + (ram * 8) + signatureScore);
-      let sensiGenerale = Math.min(92, Math.round(78 + (ram * 2.2) + (signatureScore / 2)));
-      let redDot = Math.round(sensiGenerale + 6);
-      let x2 = Math.round(sensiGenerale - 3);
-      let x4 = Math.round(sensiGenerale - 8);
-      let awm = Math.round(48 - (ram * 0.6) + (signatureScore * 0.4));
-      let buttonSize = Math.round(42 + (ram * 1.8));
-
-      document.getElementById('device-name').textContent = modelInput.toUpperCase();
-      
-      const content = document.getElementById('settings-content');
-      content.innerHTML = `
-        <div class="flex justify-between py-3 border-b border-green-400/20">
-          <span class="text-gray-300">📐 Optimal DPI</span>
-          <span class="font-bold text-green-400">${baseDpi}</span>
-        </div>
-        <div class="flex justify-between py-3 border-b border-green-400/20">
-          <span class="text-gray-300">🕹️ General Sensitivity</span>
-          <span class="font-bold">${sensiGenerale}</span>
-        </div>
-        <div class="flex justify-between py-3 border-b border-green-400/20">
-          <span class="text-gray-300">🔴 Red Dot</span>
-          <span class="font-bold">${redDot}</span>
-        </div>
-        <div class="flex justify-between py-3 border-b border-green-400/20">
-          <span class="text-gray-300">🔍 2x Scope</span>
-          <span class="font-bold">${x2}</span>
-        </div>
-        <div class="flex justify-between py-3 border-b border-green-400/20">
-          <span class="text-gray-300">🔭 4x Scope</span>
-          <span class="font-bold">${x4}</span>
-        </div>
-        <div class="flex justify-between py-3 border-b border-green-400/20">
-          <span class="text-gray-300">🎯 AWM Sniper</span>
-          <span class="font-bold">${awm}</span>
-        </div>
-        <div class="flex justify-between py-3 border-b border-green-400/20">
-          <span class="text-gray-300">🔘 Shooting Button Size</span>
-          <span class="font-bold text-yellow-400">${buttonSize}%</span>
-        </div>
-        <div class="pt-4 text-center text-green-400 font-medium">${cpuType}</div>
-      `;
-
-      document.getElementById('result').classList.remove('hidden');
+    function currentTab() {
+      return document.getElementById('panelFree').classList.contains('active') ? 'freefire' : 'codm';
     }
+
+    function buildMenu(tab) {
+      const menu = document.getElementById('mobileMenu');
+      const opposite = tab === 'codm' ? 'freefire' : 'codm';
+      menu.innerHTML = `
+        <button type="button" onclick="jumpTo('${tab}')"><i class="fa-solid ${tab === 'codm' ? 'fa-crosshairs' : 'fa-fire'} text-green-400"></i> ${tab === 'codm' ? 'CODM' : 'FREE FIRE'}</button>
+        <button type="button" onclick="jumpTo('${opposite}')"><i class="fa-solid ${opposite === 'codm' ? 'fa-crosshairs' : 'fa-fire'} text-orange-400"></i> ${opposite === 'codm' ? 'CODM' : 'FREE FIRE'}</button>
+        <button type="button" onclick="quickReset()"><i class="fa-solid fa-rotate-left text-cyan-300"></i> RESET CURRENT</button>
+        <button type="button" onclick="copyCurrent()"><i class="fa-solid fa-copy text-yellow-300"></i> COPY CURRENT</button>
+      `;
+    }
+
+    function toggleMenu(force) {
+      const menu = document.getElementById('mobileMenu');
+      const backdrop = document.getElementById('menuBackdrop');
+      const shouldOpen = typeof force === 'boolean' ? force : !menu.classList.contains('open');
+      if (shouldOpen) buildMenu(currentTab());
+      menu.classList.toggle('open', shouldOpen);
+      backdrop.classList.toggle('open', shouldOpen);
+    }
+
+    function jumpTo(tab) {
+      setActiveTab(tab);
+      toggleMenu(false);
+      document.getElementById(tab === 'codm' ? 'panelCodm' : 'panelFree').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function quickAction(action) {
+      if (action === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function quickReset() {
+      if (currentTab() === 'codm') resetCodm(); else resetFreefire();
+      toggleMenu(false);
+    }
+
+    function copyCurrent() {
+      copyResult(currentTab());
+      toggleMenu(false);
+    }
+
+    function toggleGlow(key) {
+      glowState[key] = !glowState[key];
+      document.body.style.filter = Object.values(glowState).some(Boolean) ? 'saturate(1.1) contrast(1.05)' : 'none';
+    }
+
+    function setActiveTab(tab) {
+      document.getElementById('tabCodm').classList.toggle('active', tab === 'codm');
+      document.getElementById('tabFree').classList.toggle('active', tab === 'freefire');
+      document.getElementById('panelCodm').classList.toggle('active', tab === 'codm');
+      document.getElementById('panelFree').classList.toggle('active', tab === 'freefire');
+      localStorage.setItem('activeGameTab', tab);
+      buildMenu(tab);
+    }
+
+    function switchTab(tab) { setActiveTab(tab); }
+
+    function hashString(str) {
+      let hash = 0;
+      for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0;
+      }
+      return Math.abs(hash);
+    }
+
+    function detectCodmPower(model) {
+      const m = model.toLowerCase();
+      const flagship = ["s24","s23","s22","iphone 15","iphone 14","iphone 13","poco f6","x6 pro","rog","black shark","snapdragon 8","dimensity 9300","dimensity 9200","snapdragon 8 gen 3"];
+      const upperMid = ["s21","s20","iphone 12","note 13 pro","note 12 pro","poco x6","dimensity 8200","dimensity 8300","snapdragon 7","realme gt","oneplus nord"];
+      const midrange = ["redmi","xiaomi","realme","infinix","tecno","spark","galaxy a","a1","a2","a3","a5","moto g","oppo a"];
+      for (const item of flagship) if (m.includes(item)) return { score: 48, level: "Flagship", fps: "90 FPS", graphics: "Ultra" };
+      for (const item of upperMid) if (m.includes(item)) return { score: 34, level: "Upper Mid-Range", fps: "90 FPS", graphics: "Very High" };
+      for (const item of midrange) if (m.includes(item)) return { score: 18, level: "Mid-Range", fps: "60 FPS", graphics: "High" };
+      return { score: 10, level: "Unknown / Entry-Level", fps: "60 FPS", graphics: "Medium" };
+    }
+
+    function detectFreefirePower(model) {
+      const m = model.toLowerCase();
+      if (m.includes("iphone") || m.includes("s23") || m.includes("s24") || m.includes("snapdragon 8") || m.includes("dimensity 9300") || m.includes("rog") || m.includes("black shark")) return { score: 46, level: "Flagship", fps: "90 FPS", graphics: "Ultra" };
+      if (m.includes("pro") || m.includes("ultra") || m.includes("note 12 pro") || m.includes("note 13 pro") || m.includes("x6 pro") || m.includes("dimensity 8200") || m.includes("snapdragon 7")) return { score: 32, level: "Upper Mid-Range", fps: "90 FPS", graphics: "Very High" };
+      if (m.includes("a5") || m.includes("a3") || m.includes("a2") || m.includes("redmi") || m.includes("infinix") || m.includes("tecno") || m.includes("spark")) return { score: 18, level: "Mid-Range", fps: "60 FPS", graphics: "High" };
+      return { score: 9, level: "Entry-Level", fps: "60 FPS", graphics: "Medium" };
+    }
+
+    function buildText(modelInput, ram, powerData, mode, prefix) {
+      const seed = hashString(modelInput + "|" + ram + "|" + mode + "|" + prefix);
+      const modelBoost = (seed % 13) - 6;
+      const ramScore = ram * 11;
+      const totalScore = ramScore + powerData.score + modelBoost;
+      let modeBoost = 0;
+      if (mode === "high") modeBoost = 6;
+      if (mode === "low") modeBoost = -4;
+      const general = clamp(Math.round(40 + totalScore * 0.72 + modeBoost), 30, 100);
+      const ads = clamp(Math.round(36 + totalScore * 0.66 + modeBoost), 25, 100);
+      const scope4x = clamp(Math.round(30 + totalScore * 0.56 + modeBoost), 20, 100);
+      const redDot = clamp(general - 2, 25, 100);
+      const x2 = clamp(ads - 4, 20, 100);
+      const sniper = clamp(Math.round(28 + totalScore * 0.45 + modeBoost), 15, 100);
+      const dpi = clamp(Math.round(380 + (ram * 8) + powerData.score + (seed % 17)), 320, 980);
+      const buttonSize = clamp(Math.round(42 + (ram * 1.8) + (powerData.score / 4)), 35, 70);
+      return {
+        text: `${modelInput.toUpperCase()} | ${powerData.level} | RAM ${ram} GB | ${mode.toUpperCase()} | DPI ${dpi} | GEN ${general} | ADS ${ads} | 4X ${scope4x} | RED DOT ${redDot} | 2X ${x2} | SNIPER ${sniper} | BUTTON ${buttonSize}% | ${powerData.graphics} | ${powerData.fps}`,
+        html: `
+          <div class="result-line"><span class="label">📐 Optimal DPI</span><span class="value">${dpi}</span></div>
+          <div class="result-line"><span class="label">🕹️ General Sensitivity</span><span class="value">${general}</span></div>
+          <div class="result-line"><span class="label">🔴 Red Dot</span><span class="value">${redDot}</span></div>
+          <div class="result-line"><span class="label">🔍 2x Scope</span><span class="value">${x2}</span></div>
+          <div class="result-line"><span class="label">🔭 4x Scope</span><span class="value">${scope4x}</span></div>
+          <div class="result-line"><span class="label">🎯 Sniper</span><span class="value">${sniper}</span></div>
+          <div class="result-line"><span class="label">🔘 Button Size</span><span class="value yellow">${buttonSize}%</span></div>
+          <div class="result-line"><span class="label">📺 Graphics Quality</span><span class="value">${powerData.graphics}</span></div>
+          <div class="result-line"><span class="label">⚡ FPS Target</span><span class="value">${powerData.fps}</span></div>
+        `
+      };
+    }
+
+    function generateCodm() {
+      const modelInput = document.getElementById('codmModel').value.trim();
+      const ram = parseInt(document.getElementById('codmRam').value, 10);
+      const mode = document.getElementById('codmPower').value;
+      if (!modelInput || isNaN(ram) || ram <= 0) return alert("Please enter a valid phone model and RAM.");
+      const out = buildText(modelInput, ram, detectCodmPower(modelInput), mode, 'codm');
+      document.getElementById('codmDeviceName').textContent = modelInput.toUpperCase();
+      document.getElementById('codmSettings').innerHTML = out.html;
+      document.getElementById('codmResult').classList.remove('hidden');
+      copiedTextStore.codm = out.text;
+    }
+
+    function resetCodm() {
+      document.getElementById('codmModel').value = '';
+      document.getElementById('codmRam').value = '';
+      document.getElementById('codmPower').value = 'medium';
+      document.getElementById('codmResult').classList.add('hidden');
+      copiedTextStore.codm = '';
+    }
+
+    function generateFreefire() {
+      const modelInput = document.getElementById('ffModel').value.trim();
+      const ram = parseInt(document.getElementById('ffRam').value, 10);
+      const mode = document.getElementById('ffPower').value;
+      if (!modelInput || isNaN(ram) || ram <= 0) return alert("Please enter a valid phone model and RAM.");
+      const out = buildText(modelInput, ram, detectFreefirePower(modelInput), mode, 'freefire');
+      document.getElementById('ffDeviceName').textContent = modelInput.toUpperCase();
+      document.getElementById('ffSettings').innerHTML = out.html;
+      document.getElementById('ffResult').classList.remove('hidden');
+      copiedTextStore.freefire = out.text;
+    }
+
+    function resetFreefire() {
+      document.getElementById('ffModel').value = '';
+      document.getElementById('ffRam').value = '';
+      document.getElementById('ffPower').value = 'medium';
+      document.getElementById('ffResult').classList.add('hidden');
+      copiedTextStore.freefire = '';
+    }
+
+    async function copyResult(game) {
+      const text = copiedTextStore[game];
+      if (!text) return alert("Generate settings first.");
+      try { await navigator.clipboard.writeText(text); alert("Results copied!"); }
+      catch (e) { alert("Copy failed on this browser"); }
+    }
+
+    window.addEventListener('load', () => {
+      const tab = localStorage.getItem('activeGameTab') || 'codm';
+      setActiveTab(tab);
+      const codmModel = localStorage.getItem('codmModel');
+      const codmRam = localStorage.getItem('codmRam');
+      const codmPower = localStorage.getItem('codmPower');
+      if (codmModel) document.getElementById('codmModel').value = codmModel;
+      if (codmRam) document.getElementById('codmRam').value = codmRam;
+      if (codmPower) document.getElementById('codmPower').value = codmPower;
+      const ffModel = localStorage.getItem('ffModel');
+      const ffRam = localStorage.getItem('ffRam');
+      const ffPower = localStorage.getItem('ffPower');
+      if (ffModel) document.getElementById('ffModel').value = ffModel;
+      if (ffRam) document.getElementById('ffRam').value = ffRam;
+      if (ffPower) document.getElementById('ffPower').value = ffPower;
+      buildMenu(tab);
+    });
   </script>
 </body>
 </html>
