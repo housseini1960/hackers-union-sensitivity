@@ -68,32 +68,28 @@
     .mobile-menu button:hover{background:rgba(0,255,128,.08)}
     .menu-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.34);opacity:0;pointer-events:none;transition:.2s ease;z-index:70}
     .menu-backdrop.open{opacity:1;pointer-events:auto}
-    @media (max-width:640px){.page-wrap{padding:10px 10px 36px}.tab-btn{padding:12px 10px;border-radius:16px;font-size:13px}}
+    .social-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .social-card{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 16px;border-radius:18px;text-decoration:none;color:#fff;background:rgba(255,255,255,.06);border:1px solid rgba(0,255,128,.18);transition:.2s ease}
+    .social-card:hover{transform:translateY(-2px);background:rgba(0,255,128,.08)}
+    @media (max-width:640px){.page-wrap{padding:10px 10px 36px}.tab-btn{padding:12px 10px;border-radius:16px;font-size:13px}.social-grid{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
   <div id="menuBackdrop" class="menu-backdrop" onclick="toggleMenu(false)"></div>
-
   <div class="sticky-header">
     <div class="header-inner">
       <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between gap-3 relative">
         <div class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-2xl glass flex items-center justify-center text-green-400">
-            <i class="fa-solid fa-bolt"></i>
-          </div>
+          <div class="w-11 h-11 rounded-2xl glass flex items-center justify-center text-green-400"><i class="fa-solid fa-bolt"></i></div>
           <div>
             <div class="text-white font-black tracking-wider">HACKERS UNION</div>
             <div class="text-cyan-400 text-xs">Developed by a Duo of Professionals</div>
           </div>
         </div>
-
         <div class="flex items-center gap-3 text-cyan-300">
           <button type="button" class="badge" onclick="quickAction('home')"><i class="fa-solid fa-house"></i> Home</button>
-          <button type="button" class="w-11 h-11 rounded-2xl glass flex items-center justify-center text-white" onclick="toggleMenu()">
-            <i class="fa-solid fa-bars"></i>
-          </button>
+          <button type="button" class="w-11 h-11 rounded-2xl glass flex items-center justify-center text-white" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
         </div>
-
         <div id="mobileMenu" class="mobile-menu"></div>
       </div>
     </div>
@@ -118,6 +114,7 @@
       <div class="flex gap-3 mb-5">
         <button id="tabCodm" class="tab-btn active" type="button" onclick="switchTab('codm')"><i class="fa-solid fa-crosshairs mr-2"></i>CODM</button>
         <button id="tabFree" class="tab-btn" type="button" onclick="switchTab('freefire')"><i class="fa-solid fa-fire mr-2"></i>FREE FIRE</button>
+        <button id="tabBlood" class="tab-btn" type="button" onclick="switchTab('blood')"><i class="fa-solid fa-bolt mr-2"></i>BLOOD STRIKE</button>
       </div>
 
       <div id="panelCodm" class="panel active">
@@ -148,7 +145,6 @@
           <div id="codmResult" class="hidden mt-8 glass p-5 sm:p-6 rounded-[24px] border-l-4 border-green-400">
             <h3 id="codmDeviceName" class="text-xl sm:text-2xl font-bold text-green-400 mb-4 text-center"></h3>
             <div id="codmSettings" class="space-y-1"></div>
-            <p class="mini-note">🔥 Unique AI Algorithm based on your device signature</p>
           </div>
         </div>
       </div>
@@ -181,33 +177,78 @@
           <div id="ffResult" class="hidden mt-8 glass p-5 sm:p-6 rounded-[24px] border-l-4 border-green-400">
             <h3 id="ffDeviceName" class="text-xl sm:text-2xl font-bold text-green-400 mb-4 text-center"></h3>
             <div id="ffSettings" class="space-y-1"></div>
-            <p class="mini-note">🔥 Unique AI Algorithm based on your device signature</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="panelBlood" class="panel">
+        <div class="glass rounded-[24px] p-5 sm:p-6">
+          <div class="space-y-5">
+            <div>
+              <label class="block text-green-400 text-sm mb-2 font-medium">📱 EXACT PHONE MODEL</label>
+              <input type="text" id="bsModel" class="input-field p-4 rounded-2xl text-base sm:text-lg" placeholder="Ex: Samsung S23, Redmi Note 12 Pro...">
+            </div>
+            <div>
+              <label class="block text-green-400 text-sm mb-2 font-medium">💾 RAM (in GB)</label>
+              <input type="number" id="bsRam" class="input-field p-4 rounded-2xl text-base sm:text-lg" placeholder="Ex: 4, 6, 8, 12">
+            </div>
+            <div>
+              <label class="block text-green-400 text-sm mb-2 font-medium">⚡ PERFORMANCE LEVEL</label>
+              <select id="bsPower" class="input-field p-4 rounded-2xl text-base sm:text-lg">
+                <option value="medium">Mid-tier / Standard</option>
+                <option value="low">Low-tier / Light</option>
+                <option value="high">High-tier / Full Gaming</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <button type="button" class="btn-primary py-4 rounded-2xl text-base sm:text-lg" onclick="generateBlood()"><i class="fa-solid fa-bolt mr-2"></i>GENERATE</button>
+              <button type="button" class="btn-copy py-4 rounded-2xl text-base sm:text-lg" onclick="copyResult('blood')"><i class="fa-solid fa-copy mr-2"></i>COPY</button>
+              <button type="button" class="btn-secondary py-4 rounded-2xl text-base sm:text-lg" onclick="resetBlood()"><i class="fa-solid fa-rotate-left mr-2"></i>RESET</button>
+            </div>
+          </div>
+          <div id="bsResult" class="hidden mt-8 glass p-5 sm:p-6 rounded-[24px] border-l-4 border-green-400">
+            <h3 id="bsDeviceName" class="text-xl sm:text-2xl font-bold text-green-400 mb-4 text-center"></h3>
+            <div id="bsSettings" class="space-y-1"></div>
           </div>
         </div>
       </div>
     </div>
+
+    <section class="glass rounded-[24px] p-5 sm:p-6 mt-6">
+      <h2 class="text-2xl sm:text-3xl font-black text-green-400 text-center mb-3">Join Our Groups</h2>
+      <p class="text-center text-cyan-200 text-sm sm:text-base mb-6 leading-7">
+        Join our official community to receive updates, support, new releases, and exclusive content.
+      </p>
+
+      <div class="social-grid">
+        <a href="https://t.me/HACKER_UNION_1" target="_blank" rel="noopener noreferrer" class="social-card">
+          <i class="fa-brands fa-telegram text-cyan-300"></i>
+          Join Telegram
+        </a>
+
+        <a href="https://whatsapp.com/channel/0029VbCyobNCsU9PQmplVR1J" target="_blank" rel="noopener noreferrer" class="social-card">
+          <i class="fa-brands fa-whatsapp text-green-400"></i>
+          Join WhatsApp
+        </a>
+      </div>
+    </section>
 
     <div class="footer">HACKERS UNION • Developed by a Duo of Professionals</div>
   </div>
 
   <script>
     const clamp = (v, min, max) => Math.min(max, Math.max(min, v));
-    let copiedTextStore = { codm: "", freefire: "" };
+    let copiedTextStore = { codm: "", freefire: "", blood: "" };
     let glowState = { mobile: false, neon: false, stable: false };
 
     function currentTab() {
-      return document.getElementById('panelFree').classList.contains('active') ? 'freefire' : 'codm';
+      return document.getElementById('panelFree').classList.contains('active') ? 'freefire' : document.getElementById('panelBlood').classList.contains('active') ? 'blood' : 'codm';
     }
 
     function buildMenu(tab) {
       const menu = document.getElementById('mobileMenu');
-      const opposite = tab === 'codm' ? 'freefire' : 'codm';
-      menu.innerHTML = `
-        <button type="button" onclick="jumpTo('${tab}')"><i class="fa-solid ${tab === 'codm' ? 'fa-crosshairs' : 'fa-fire'} text-green-400"></i> ${tab === 'codm' ? 'CODM' : 'FREE FIRE'}</button>
-        <button type="button" onclick="jumpTo('${opposite}')"><i class="fa-solid ${opposite === 'codm' ? 'fa-crosshairs' : 'fa-fire'} text-orange-400"></i> ${opposite === 'codm' ? 'CODM' : 'FREE FIRE'}</button>
-        <button type="button" onclick="quickReset()"><i class="fa-solid fa-rotate-left text-cyan-300"></i> RESET CURRENT</button>
-        <button type="button" onclick="copyCurrent()"><i class="fa-solid fa-copy text-yellow-300"></i> COPY CURRENT</button>
-      `;
+      const list = ['codm','freefire','blood'].filter(x=>x!==tab);
+      menu.innerHTML = `<button type="button" onclick="jumpTo('${tab}')"><i class="fa-solid fa-circle text-green-400"></i> ${tab.toUpperCase()}</button>` + list.map(x=>`<button type="button" onclick="jumpTo('${x}')"><i class="fa-solid fa-circle text-cyan-400"></i> ${x.toUpperCase()}</button>`).join('') + `<button type="button" onclick="quickReset()"><i class="fa-solid fa-rotate-left text-cyan-300"></i> Reset Current</button><button type="button" onclick="copyCurrent()"><i class="fa-solid fa-copy text-yellow-300"></i> Copy Current</button>`;
     }
 
     function toggleMenu(force) {
@@ -222,15 +263,15 @@
     function jumpTo(tab) {
       setActiveTab(tab);
       toggleMenu(false);
-      document.getElementById(tab === 'codm' ? 'panelCodm' : 'panelFree').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById(tab === 'codm' ? 'panelCodm' : tab === 'freefire' ? 'panelFree' : 'panelBlood').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function quickAction(action) {
-      if (action === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    function quickAction(action) { if (action === 'home') window.scrollTo({ top: 0, behavior: 'smooth' }); }
 
     function quickReset() {
-      if (currentTab() === 'codm') resetCodm(); else resetFreefire();
+      if (currentTab() === 'codm') resetCodm();
+      else if (currentTab() === 'freefire') resetFreefire();
+      else resetBlood();
       toggleMenu(false);
     }
 
@@ -247,8 +288,10 @@
     function setActiveTab(tab) {
       document.getElementById('tabCodm').classList.toggle('active', tab === 'codm');
       document.getElementById('tabFree').classList.toggle('active', tab === 'freefire');
+      document.getElementById('tabBlood').classList.toggle('active', tab === 'blood');
       document.getElementById('panelCodm').classList.toggle('active', tab === 'codm');
       document.getElementById('panelFree').classList.toggle('active', tab === 'freefire');
+      document.getElementById('panelBlood').classList.toggle('active', tab === 'blood');
       localStorage.setItem('activeGameTab', tab);
       buildMenu(tab);
     }
@@ -281,6 +324,14 @@
       if (m.includes("pro") || m.includes("ultra") || m.includes("note 12 pro") || m.includes("note 13 pro") || m.includes("x6 pro") || m.includes("dimensity 8200") || m.includes("snapdragon 7")) return { score: 32, level: "Upper Mid-Range", fps: "90 FPS", graphics: "Very High" };
       if (m.includes("a5") || m.includes("a3") || m.includes("a2") || m.includes("redmi") || m.includes("infinix") || m.includes("tecno") || m.includes("spark")) return { score: 18, level: "Mid-Range", fps: "60 FPS", graphics: "High" };
       return { score: 9, level: "Entry-Level", fps: "60 FPS", graphics: "Medium" };
+    }
+
+    function detectBloodPower(model) {
+      const m = model.toLowerCase();
+      if (m.includes("iphone") || m.includes("s23") || m.includes("s24") || m.includes("snapdragon 8") || m.includes("dimensity 9300") || m.includes("rog") || m.includes("black shark")) return { score: 44, level: "Flagship", fps: "90 FPS", graphics: "Ultra" };
+      if (m.includes("pro") || m.includes("ultra") || m.includes("note 12 pro") || m.includes("note 13 pro") || m.includes("x6 pro") || m.includes("dimensity 8200") || m.includes("snapdragon 7")) return { score: 31, level: "Upper Mid-Range", fps: "90 FPS", graphics: "Very High" };
+      if (m.includes("a5") || m.includes("a3") || m.includes("a2") || m.includes("redmi") || m.includes("infinix") || m.includes("tecno") || m.includes("spark")) return { score: 17, level: "Mid-Range", fps: "60 FPS", graphics: "High" };
+      return { score: 8, level: "Entry-Level", fps: "60 FPS", graphics: "Medium" };
     }
 
     function buildText(modelInput, ram, powerData, mode, prefix) {
@@ -355,30 +406,42 @@
       copiedTextStore.freefire = '';
     }
 
+    function generateBlood() {
+      const modelInput = document.getElementById('bsModel').value.trim();
+      const ram = parseInt(document.getElementById('bsRam').value, 10);
+      const mode = document.getElementById('bsPower').value;
+      if (!modelInput || isNaN(ram) || ram <= 0) return alert("Please enter a valid phone model and RAM.");
+      const out = buildText(modelInput, ram, detectBloodPower(modelInput), mode, 'blood');
+      document.getElementById('bsDeviceName').textContent = modelInput.toUpperCase();
+      document.getElementById('bsSettings').innerHTML = out.html;
+      document.getElementById('bsResult').classList.remove('hidden');
+      copiedTextStore.blood = out.text;
+    }
+
+    function resetBlood() {
+      document.getElementById('bsModel').value = '';
+      document.getElementById('bsRam').value = '';
+      document.getElementById('bsPower').value = 'medium';
+      document.getElementById('bsResult').classList.add('hidden');
+      copiedTextStore.blood = '';
+    }
+
     async function copyResult(game) {
       const text = copiedTextStore[game];
       if (!text) return alert("Generate settings first.");
-      try { await navigator.clipboard.writeText(text); alert("Results copied!"); }
-      catch (e) { alert("Copy failed on this browser"); }
+      try {
+        await navigator.clipboard.writeText(text);
+        alert("Results copied!");
+      } catch (e) {
+        alert("Copy failed on this browser");
+      }
     }
 
     window.addEventListener('load', () => {
       const tab = localStorage.getItem('activeGameTab') || 'codm';
       setActiveTab(tab);
-      const codmModel = localStorage.getItem('codmModel');
-      const codmRam = localStorage.getItem('codmRam');
-      const codmPower = localStorage.getItem('codmPower');
-      if (codmModel) document.getElementById('codmModel').value = codmModel;
-      if (codmRam) document.getElementById('codmRam').value = codmRam;
-      if (codmPower) document.getElementById('codmPower').value = codmPower;
-      const ffModel = localStorage.getItem('ffModel');
-      const ffRam = localStorage.getItem('ffRam');
-      const ffPower = localStorage.getItem('ffPower');
-      if (ffModel) document.getElementById('ffModel').value = ffModel;
-      if (ffRam) document.getElementById('ffRam').value = ffRam;
-      if (ffPower) document.getElementById('ffPower').value = ffPower;
       buildMenu(tab);
     });
   </script>
 </body>
-</html>
+  </html>
